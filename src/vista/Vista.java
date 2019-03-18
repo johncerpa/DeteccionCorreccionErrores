@@ -11,42 +11,51 @@ public class Vista extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        btnDeteccion = new javax.swing.JRadioButton();
-        btnCorreccion = new javax.swing.JRadioButton();
-        btnAbrir = new javax.swing.JToggleButton();
+        btnDeteccion = new javax.swing.JToggleButton();
+        btnCorreccion = new javax.swing.JToggleButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        buttonGroup1.add(btnDeteccion);
-        btnDeteccion.setText("Deteccion");
+        btnDeteccion.setText("Deteccion de errores");
 
-        buttonGroup1.add(btnCorreccion);
-        btnCorreccion.setText("Correccion");
+        btnCorreccion.setText("Correccion de errores");
 
-        btnAbrir.setText("Abrir archivo");
+        jLabel2.setFont(new java.awt.Font("Lucida Grande", 0, 9)); // NOI18N
+        jLabel2.setText("© Creado por Jhon Cerpa, Angel Mercado y Jesus Mercado.");
+
+        jLabel1.setFont(new java.awt.Font("Phosphate", 0, 48)); // NOI18N
+        jLabel1.setText("DETECTOR");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(btnDeteccion)
-                .addGap(18, 18, 18)
-                .addComponent(btnCorreccion)
-                .addGap(36, 36, 36)
-                .addComponent(btnAbrir)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addGap(66, 66, 66)
+                .addComponent(jLabel2)
+                .addContainerGap(62, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDeteccion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCorreccion, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(89, 89, 89))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(246, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDeteccion)
-                    .addComponent(btnCorreccion)
-                    .addComponent(btnAbrir))
-                .addGap(31, 31, 31))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDeteccion, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCorreccion, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addContainerGap())
         );
 
         pack();
@@ -85,9 +94,10 @@ public class Vista extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JToggleButton btnAbrir;
-    public javax.swing.JRadioButton btnCorreccion;
-    public javax.swing.JRadioButton btnDeteccion;
+    public javax.swing.JToggleButton btnCorreccion;
+    public javax.swing.JToggleButton btnDeteccion;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
