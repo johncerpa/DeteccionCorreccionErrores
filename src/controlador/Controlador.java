@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import modelo.Modelo;
@@ -25,6 +26,7 @@ public class Controlador implements ActionListener {
         this.modelo = modelo;
         this.vistaDeteccion = vistaDeteccion;
         this.vista.btnDeteccion.addActionListener(this);
+        this.vistaDeteccion.btnAbrir.addActionListener(this);
     }
 
 
@@ -40,8 +42,8 @@ public class Controlador implements ActionListener {
             vistaDeteccion.setTitle("Deteccion de errores");
             vistaDeteccion.setLocationRelativeTo(null);
             vistaDeteccion.setVisible(true);
+            vistaDeteccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         } 
-        
         
         if (e.getSource() == this.vistaDeteccion.btnAbrir) {
             JFileChooser chooser = new JFileChooser();
