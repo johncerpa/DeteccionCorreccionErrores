@@ -47,10 +47,12 @@ public class VistaDeteccion extends javax.swing.JFrame {
         txtNombreArchivo.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         txtNombreArchivo.setText("No se ha abierto");
 
+        areaEntrada.setEditable(false);
         areaEntrada.setColumns(20);
         areaEntrada.setRows(5);
         jScrollPane1.setViewportView(areaEntrada);
 
+        areaSalida.setEditable(false);
         areaSalida.setColumns(20);
         areaSalida.setRows(5);
         jScrollPane2.setViewportView(areaSalida);
@@ -85,11 +87,12 @@ public class VistaDeteccion extends javax.swing.JFrame {
                 .addComponent(btnAbrir)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(58, 58, 58)
+                        .addGap(20, 20, 20)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(87, 87, 87)
                         .addComponent(jLabel2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,8 +180,8 @@ public class VistaDeteccion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea areaEntrada;
-    private javax.swing.JTextArea areaSalida;
+    public javax.swing.JTextArea areaEntrada;
+    public javax.swing.JTextArea areaSalida;
     public javax.swing.JToggleButton btnAbrir;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnReceptar;
