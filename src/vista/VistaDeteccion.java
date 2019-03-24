@@ -192,6 +192,6 @@ public class VistaDeteccion extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JLabel txtNombreArchivo;
+    public javax.swing.JLabel txtNombreArchivo;
     // End of variables declaration//GEN-END:variables
 }
