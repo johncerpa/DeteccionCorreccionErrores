@@ -13,6 +13,8 @@ public class Modelo {
 
     private File archivo;
     private String contenidoArchivo;
+    public boolean archivoValido;
+    public String error;
 
     public void setArchivo(File archivo) {
         this.archivo = archivo;
@@ -50,19 +52,26 @@ public class Modelo {
 
             if (!invalido) {
                 contenidoArchivo = contenido;
+                archivoValido = true;
                 return contenido;
             }
+            
+            error = "La frase a enviar no es valida";
+            
         } catch (FileNotFoundException ex) {
             System.out.println("Archivo no encontrado " + ex.toString());
+            error = "El archivo no ha sido encontrado";
         } catch (IOException ex) {
             System.out.println("Error de lectura " + ex.toString());
+            error = "Disculpe. Ocurrio un error de lectura";
         }
 
         return "";
     }
 
     // Se convierte la frase a binario y se guarda el archivo
-    public String convertirFraseaBinario() {
+    public String procesarFrase() {
+        
         String resultado = "";
         byte[] bytes = contenidoArchivo.getBytes(StandardCharsets.US_ASCII); // Se obtienen los valores ASCII
         try (PrintWriter pw = new PrintWriter(getNombreSinExtension() + ".btp", "UTF-8")) {
@@ -91,6 +100,7 @@ public class Modelo {
             
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             System.out.println(ex.toString());
+            error = "El archivo no fue encontrado";
         }
         
         return "";

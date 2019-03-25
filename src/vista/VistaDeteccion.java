@@ -183,8 +183,8 @@ public class VistaDeteccion extends javax.swing.JFrame {
     public javax.swing.JTextArea areaEntrada;
     public javax.swing.JTextArea areaSalida;
     public javax.swing.JToggleButton btnAbrir;
-    private javax.swing.JButton btnEnviar;
-    private javax.swing.JButton btnReceptar;
+    public javax.swing.JButton btnEnviar;
+    public javax.swing.JButton btnReceptar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
