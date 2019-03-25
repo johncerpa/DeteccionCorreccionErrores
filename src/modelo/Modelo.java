@@ -87,7 +87,7 @@ public class Modelo {
                 }
                 
                 if (cont == 16) {
-                    resultado += "\n";
+                    resultado += System.lineSeparator();
                     cont = 0;
                 } 
                 cont++;
