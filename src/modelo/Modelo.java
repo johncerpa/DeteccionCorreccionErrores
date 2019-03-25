@@ -87,15 +87,13 @@ public class Modelo {
                 }
                 
                 if (cont == 16) {
-                    pw.println();
                     resultado += "\n";
                     cont = 0;
                 } 
                 cont++;
-                pw.print(bin);
                 resultado += bin;
             }
-            
+            pw.print(resultado);            
             return resultado;
             
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
