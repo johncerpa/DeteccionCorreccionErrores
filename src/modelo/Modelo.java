@@ -76,22 +76,37 @@ public class Modelo {
         byte[] bytes = contenidoArchivo.getBytes(StandardCharsets.US_ASCII); // Se obtienen los valores ASCII
         try (PrintWriter pw = new PrintWriter(getNombreSinExtension() + ".btp", "UTF-8")) {
             int cont = 0;
+            
+            String binWord = "";//Palabra de codigo por linea
+            String bin = "";
+            
             for (int i = 0; i < bytes.length; i++) {
-                String bin = Integer.toBinaryString(bytes[i]); // Se convierte a binario
+                
+                bin = Integer.toBinaryString(bytes[i]); // Se convierte a binario. Caracter por caracter.
+                
                 if (bin.length() < 8) {
-                    String nuevo = "";
+                    //String nuevo = "";
                     for (int j = bin.length(); j < 8; j++) {
-                        nuevo += "0";
+                        //nuevo += "0";
+                        bin = "0" + bin;
                     }
-                    bin = nuevo + bin;
+                   
                 }
                 
                 if (cont == 16) {
+                    
+                    resultado += binWord;//Agrego la palabra de datos
+                    resultado += binWord.split("1").length%2;//Palabra de codigo. Bit de paridad. 
+                    
                     resultado += "\n";
                     cont = 0;
+                    binWord = "";
                 } 
                 cont++;
-                resultado += bin;
+                
+                binWord += bin;//Agrego los caracteres binarios a la palabra de datos final.
+                
+                //resultado += bin;
             }
             pw.print(resultado);            
             return resultado;

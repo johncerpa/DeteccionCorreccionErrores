@@ -3,8 +3,11 @@ package controlador;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import modelo.Modelo;
 import vista.Vista;
 import vista.VistaDeteccion;
@@ -40,7 +43,7 @@ public class Controlador implements ActionListener {
         }
 
         if (this.vistaDeteccion.btnAbrir == e.getSource()) {
-            File archivo = vista.abrirChooser();
+            File archivo = this.abrirChooser();
             if (archivo != null) {
                 modelo.setArchivo(archivo);
                 vistaDeteccion.txtNombreArchivo.setText(modelo.getNombreConExtension());
@@ -62,4 +65,20 @@ public class Controlador implements ActionListener {
         }
 
     }
+    
+        public File abrirChooser() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Escoja el archivo");
+
+        FileFilter filtro_txt = new FileNameExtensionFilter("Solo archivos .txt", "txt");
+        chooser.setFileFilter(filtro_txt);
+
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        
+        return null;
+    }
+
 }
