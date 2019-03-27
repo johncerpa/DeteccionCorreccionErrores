@@ -3,6 +3,7 @@ package controlador;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.PrintWriter;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -26,6 +27,7 @@ public class Controlador implements ActionListener {
         this.vista.btnDeteccion.addActionListener(this);
         this.vistaDeteccion.btnAbrir.addActionListener(this);
         this.vistaDeteccion.btnEnviar.addActionListener(this);
+        this.vistaDeteccion.btnReceptar.addActionListener(this);
     }
 
     public void iniciar() {
@@ -34,6 +36,7 @@ public class Controlador implements ActionListener {
         vista.setLocationRelativeTo(null);
     }
 
+    
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -61,7 +64,7 @@ public class Controlador implements ActionListener {
             
                     vistaDeteccion.areaEntrada.setText(modelo.getInfoArchivo());
                     
-                    modelo.procesarFrase();
+                    modelo.str2Bin();
                     vistaDeteccion.areaSalida.setText(modelo.getCodeWord());
                 }
             }
@@ -72,9 +75,6 @@ public class Controlador implements ActionListener {
             if (modelo.archivoValido) {
                 
                 modelo.sendData();
-                //String resultado = modelo.procesarFrase();
-                //System.out.println(modelo.getCodeWord().split("\n")[0]);
-                //vistaDeteccion.areaSalida.setText(modelo.getCodeWord());
             } else {
                 
                 JOptionPane.showMessageDialog(null, modelo.error + ". Por favor, seleccione el archivo a enviar.");
@@ -82,15 +82,30 @@ public class Controlador implements ActionListener {
         }
         
         if(this.vistaDeteccion.btnReceptar == e.getSource()){
-            System.out.println("hola mundo");
             
-            /*if(modelo.Sindrome()){
+            if(modelo.Sindrome()){
+                
                 JOptionPane.showMessageDialog(null, modelo.error);
-            }*/
+            }else{
+                
+                modelo.setDataWord(modelo.codeWordToDataWord());
+                
+                try(PrintWriter pw = new PrintWriter("sendedData.txt")) {
+                    
+                    //pw.print(modelo.getCodeWord());
+                    //pw.print(modelo.bin2Str());
+                    
+                } catch (Exception ex) {
+                    System.out.println(ex.toString());
+                }
+            }
         }
 
     }
     
+    /**
+     * Menu que se encarga de seleccionar un archivo y retornarlo.
+     */
     public File abrirChooser() {
         
         JFileChooser chooser = new JFileChooser();

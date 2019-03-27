@@ -16,9 +16,24 @@ public class Modelo {
     private String contenidoArchivo;
     public boolean archivoValido;
     public String error;
+    private String dataWord;
     private String codeWord;
-    private String codeWordWithErrors;
+    private String codeWordWithErrors = "";
 
+    public String getDataWord(){
+        
+        return this.dataWord;
+    }
+    
+    public void setDataWord(String data){
+        
+        this.codeWord = data;
+    }
+    
+    /**
+     * Actualiza la informacion de la variable 'archivo'. Esta variable contendra
+     * la informacion del archivo que ha sido tomado como archivo de datos a enviar.
+     */
     public void setArchivo(File archivo) {
         this.archivo = archivo;
     }
@@ -28,6 +43,7 @@ public class Modelo {
     }
 
     public String getNombreSinExtension() {
+        
         int indice = archivo.getName().indexOf('.');
         return archivo.getName().substring(0, indice);
     }
@@ -36,10 +52,35 @@ public class Modelo {
         return (a >= 65 && a <= 90) || (a >= 97 && a <= 122) || a == 58 || a == 59 || a == 44 || a == 46 || a == 32;
     }
 
+    /**
+     * Convierte la palabra de codigo que se ha enviado o la que se desee y la 
+     * transforma en una palabra de datos, es decir hace el proceso contrario.
+     */
+    public String codeWordToDataWord(){
+        
+        String result = "";
+        
+        for (String cw : getCodeWordWothErrorsAsVector()) {
+            
+            result += cw.substring(cw.length()-1) + "\n";
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Permite obtener la palabra de codigo, completa, que ha sido enviada por el
+     * 'medio fisico' para su posterior procesamiento.
+     */
     public String getCodeWordWithErrors(){
         return this.codeWordWithErrors;
     }
     
+    /**
+     * Me retorna la palabra que ha sido enviada por el 'medio fisico', pero en forma
+     * de vector, separando cada palabra de codigo para realizar un mejor manejo de
+     * la informacion
+     */
     public String[] getCodeWordWothErrorsAsVector(){
         return this.codeWordWithErrors.split("\n");
     }
@@ -88,8 +129,32 @@ public class Modelo {
         return "";
     }
 
-    // Se convierte la frase a binario y se guarda el archivo
-    public String procesarFrase() {
+    
+    /**
+     * Convierte un archivo de binarios a String, pero se debe tener en cuenta que 
+     * hace la conversion cada 8 bits hasta alcanzar una longitud de 128 bits(8 caracteres)
+     */
+    public String bin2Str(){
+        
+        String  result = "";
+        int ascii;
+        
+        for (String code : this.getCodeWord().split("\n")) {
+            
+            for (int i = 0; i < code.length(); i+=8) {
+                ascii = Integer.parseInt(code.substring(i, i+8), 2);
+                result += (new Character((char) ascii)).toString();
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Convierte la frase a binario y se guarda el archivo.
+     * El proseso de conversion se realiza cada 8 bits y se va guardando.
+     */
+    public String str2Bin() {
         
         String resultado = "";
         byte[] bytes = contenidoArchivo.getBytes(StandardCharsets.US_ASCII); // Se obtienen los valores ASCII
@@ -152,6 +217,8 @@ public class Modelo {
     public void sendData(){
         
         for (String codeWord : this.getCodeWordAsVector()) {//Aca hago los cambios aleatorios.
+            
+            System.out.println("CodeWord: "+codeWord);
             
             if(this.randomNumber(0, 1) == 1){//Si se cambia la palabra de codigo o no.
                 
