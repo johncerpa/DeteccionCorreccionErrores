@@ -1,0 +1,3 @@
+* Cree una función para hallar el sindrome de la palabra de codigos recibida y así saber si esta viene con errores o no.
+* Cree una función 'sendData'  la cual 'imita' un medio fisico por el cual se envia la información, es decir que cambia bits aleatoreamente de cada palabra de codigos  presente en el archivo que se desea enviar.
+

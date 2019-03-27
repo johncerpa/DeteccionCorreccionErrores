@@ -19,6 +19,7 @@ public class Controlador implements ActionListener {
     private final Modelo modelo;
 
     public Controlador(Vista vista, Modelo modelo, VistaDeteccion vistaDeteccion) {
+        
         this.vista = vista;
         this.modelo = modelo;
         this.vistaDeteccion = vistaDeteccion;
@@ -28,6 +29,7 @@ public class Controlador implements ActionListener {
     }
 
     public void iniciar() {
+        
         vista.setTitle("Deteccion y correccion de errores");
         vista.setLocationRelativeTo(null);
     }
@@ -36,6 +38,7 @@ public class Controlador implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (this.vista.btnDeteccion == e.getSource()) {
+            
             vistaDeteccion.setTitle("Deteccion de errores");
             vistaDeteccion.setLocationRelativeTo(null);
             vistaDeteccion.setVisible(true);
@@ -43,30 +46,53 @@ public class Controlador implements ActionListener {
         }
 
         if (this.vistaDeteccion.btnAbrir == e.getSource()) {
+            
             File archivo = this.abrirChooser();
+            
             if (archivo != null) {
+                
                 modelo.setArchivo(archivo);
                 vistaDeteccion.txtNombreArchivo.setText(modelo.getNombreConExtension());
+                
                 if (modelo.getInfoArchivo().compareTo("") == 0) {
+                    
                     JOptionPane.showMessageDialog(null, "Frase invalida, por favo corriga la frase.");
                 } else {
+            
                     vistaDeteccion.areaEntrada.setText(modelo.getInfoArchivo());
+                    
+                    modelo.procesarFrase();
+                    vistaDeteccion.areaSalida.setText(modelo.getCodeWord());
                 }
             }
         }
 
         if (this.vistaDeteccion.btnEnviar == e.getSource()) {
+            System.out.println("hola mundo 11111111");
             if (modelo.archivoValido) {
-                String resultado = modelo.procesarFrase();
-                vistaDeteccion.areaSalida.setText(resultado);
+                
+                modelo.sendData();
+                //String resultado = modelo.procesarFrase();
+                //System.out.println(modelo.getCodeWord().split("\n")[0]);
+                //vistaDeteccion.areaSalida.setText(modelo.getCodeWord());
             } else {
+                
                 JOptionPane.showMessageDialog(null, modelo.error + ". Por favor, seleccione el archivo a enviar.");
             }
+        }
+        
+        if(this.vistaDeteccion.btnReceptar == e.getSource()){
+            System.out.println("hola mundo");
+            
+            /*if(modelo.Sindrome()){
+                JOptionPane.showMessageDialog(null, modelo.error);
+            }*/
         }
 
     }
     
-        public File abrirChooser() {
+    public File abrirChooser() {
+        
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("Escoja el archivo");
@@ -75,10 +101,13 @@ public class Controlador implements ActionListener {
         chooser.setFileFilter(filtro_txt);
 
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        
             return chooser.getSelectedFile();
         }
         
         return null;
     }
+    
+    
 
 }

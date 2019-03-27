@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 
 public class Modelo {
 
@@ -15,6 +16,8 @@ public class Modelo {
     private String contenidoArchivo;
     public boolean archivoValido;
     public String error;
+    private String codeWord;
+    private String codeWordWithErrors;
 
     public void setArchivo(File archivo) {
         this.archivo = archivo;
@@ -33,6 +36,22 @@ public class Modelo {
         return (a >= 65 && a <= 90) || (a >= 97 && a <= 122) || a == 58 || a == 59 || a == 44 || a == 46 || a == 32;
     }
 
+    public String getCodeWordWithErrors(){
+        return this.codeWordWithErrors;
+    }
+    
+    public String[] getCodeWordWothErrorsAsVector(){
+        return this.codeWordWithErrors.split("\n");
+    }
+    
+    public String getCodeWord(){
+        return this.codeWord;
+    }
+    
+    public String[] getCodeWordAsVector(){
+        return this.codeWord.split("\n");
+    }
+    
     public String getInfoArchivo() {
 
         String contenido;
@@ -74,7 +93,9 @@ public class Modelo {
         
         String resultado = "";
         byte[] bytes = contenidoArchivo.getBytes(StandardCharsets.US_ASCII); // Se obtienen los valores ASCII
+        
         try (PrintWriter pw = new PrintWriter(getNombreSinExtension() + ".btp", "UTF-8")) {
+            
             int cont = 0;
             
             String binWord = "";//Palabra de codigo por linea
@@ -108,7 +129,10 @@ public class Modelo {
                 
                 //resultado += bin;
             }
-            pw.print(resultado);            
+            pw.print(resultado);    
+            
+            this.codeWord = resultado;//Lo agrego para un mejor manejo del codeWord enviado
+            
             return resultado;
             
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
@@ -117,6 +141,69 @@ public class Modelo {
         }
         
         return "";
+    }
+    
+    /**
+     * 'Envia' la informacion por un medio fisico para poder transportarla hasta 
+     * otro lugar, el cual tendra un receptor que la analice.
+     * Se debe tener en cuenta que al enviarla por este medio, cabe la posibilidad
+     * de que esta pueda dañarse cuando se realize el transporte.
+     */
+    public void sendData(){
+        
+        for (String codeWord : this.getCodeWordAsVector()) {//Aca hago los cambios aleatorios.
+            
+            if(this.randomNumber(0, 1) == 1){//Si se cambia la palabra de codigo o no.
+                
+                int bitToChange = this.randomNumber(0, codeWord.length());//Posicion del bit a cambiar.
+                
+                String[] aux = codeWord.split("");//Separo el codeWord, para poder cambiar un bit.
+                aux[bitToChange] = Integer.toString( (Integer.parseInt(aux[bitToChange])+1)%2 );//Cambio el bit aleatorio.
+                
+                this.codeWordWithErrors += String.join("", aux) + "\n";
+            }else{ //Este else es en caso de que no se 'desee' cambiar un codeWord. Se debe recordar que todo es completamente aleatorio.
+                
+                this.codeWordWithErrors += codeWord + "\n";
+            }
+        }
+
+        //Escribo el code word con los supuestos 'errores' de transporte en un 
+        //archivo predefinido.
+        try(PrintWriter pw = new PrintWriter("sendedData.btp")){
+            
+            pw.print(this.codeWordWithErrors); 
+        } catch (FileNotFoundException e) {
+
+            System.out.println(e.toString());
+            this.error = "Archivo no encontrado";
+        }
+    }
+    
+    /**
+     * Me da el sindrome, por palabra de codigo enviada.
+     * En cuyo caso, me dice si hay error o no.
+     * @return retorna un valor booleano, el cual me dice si descarto todo el 
+     * archivo, por errores, o no.
+     * Retornara 'false' en caso de que no se encuentre ningun error
+     * Retornara 'true' en caso de que se encuentre almenos un error en una palabra de codigo.
+     */
+    public boolean Sindrome(){
+        
+        for (String i : this.getCodeWordWothErrorsAsVector()) {
+            System.out.println(i);
+            if(i.split("1").length%2 == 1){
+                
+                error = "Se ha(n) encontrado error(es) en el archivo con la palabra de codigos recibida.";
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private int randomNumber(int min,int max){
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
     }
 
 }
