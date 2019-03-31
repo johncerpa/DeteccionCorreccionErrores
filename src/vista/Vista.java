@@ -1,29 +1,9 @@
 package vista;
 
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 public class Vista extends javax.swing.JFrame {
 
     public Vista() {
         initComponents();
-    }
-
-    public File abrirChooser() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new java.io.File("."));
-        chooser.setDialogTitle("Escoja el archivo");
-
-        FileFilter filtro_txt = new FileNameExtensionFilter("Solo archivos .txt", "txt");
-        chooser.setFileFilter(filtro_txt);
-
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
-        }
-        
-        return null;
     }
 
     @SuppressWarnings("unchecked")

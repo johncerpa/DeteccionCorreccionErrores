@@ -1,0 +1,1 @@
+* Terminé la conversion del archivo de binario a string. De la Palabra de Codigo a la Palabra de Datos y despues a la Frase Original.
