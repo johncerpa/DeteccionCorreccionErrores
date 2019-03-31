@@ -235,11 +235,9 @@ public class Modelo {
 
         //Escribo el code word con los supuestos 'errores' de transporte en un 
         //archivo predefinido.
-        try (PrintWriter pw = new PrintWriter("sendedData.btp")) {
-
+        try (PrintWriter pw = new PrintWriter("sentData.btp")) {
             pw.print(this.codeWordWithErrors);
         } catch (FileNotFoundException e) {
-
             System.out.println(e.toString());
             this.error = "Archivo no encontrado";
         }
