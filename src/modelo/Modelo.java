@@ -25,7 +25,6 @@ public class Modelo {
     }
 
     public void setDataWord(String data) {
-
         this.codeWord = data;
     }
 
@@ -60,7 +59,6 @@ public class Modelo {
         String result = "";
 
         for (String cw : getCodeWordWithErrorsAsVector()) {
-
             result += cw.substring(cw.length() - 1) + "\n";
         }
 
@@ -139,7 +137,6 @@ public class Modelo {
         int ascii;
 
         for (String code : this.getCodeWord().split("\n")) {
-
             for (int i = 0; i < code.length(); i += 8) {
                 ascii = Integer.parseInt(code.substring(i, i + 8), 2);
                 result += (new Character((char) ascii)).toString();
@@ -170,18 +167,15 @@ public class Modelo {
                 bin = Integer.toBinaryString(bytes[i]); // Se convierte a binario. Caracter por caracter.
 
                 if (bin.length() < 8) {
-                    //String nuevo = "";
                     for (int j = bin.length(); j < 8; j++) {
-                        //nuevo += "0";
                         bin = "0" + bin;
                     }
-
                 }
 
                 if (cont == 16) {
 
-                    resultado += binWord;//Agrego la palabra de datos
-                    resultado += binWord.split("1").length % 2;//Palabra de codigo. Bit de paridad. 
+                    resultado += binWord; //Agrego la palabra de datos
+                    resultado += binWord.split("1").length % 2; //Palabra de codigo. Bit de paridad. 
 
                     resultado += "\n";
                     cont = 0;
@@ -190,13 +184,10 @@ public class Modelo {
                 cont++;
 
                 binWord += bin;//Agrego los caracteres binarios a la palabra de datos final.
-
-                //resultado += bin;
             }
+            
             pw.print(resultado);
-
-            this.codeWord = resultado;//Lo agrego para un mejor manejo del codeWord enviado
-
+            this.codeWord = resultado; //Lo agrego para un mejor manejo del codeWord enviado
             return resultado;
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
@@ -220,15 +211,11 @@ public class Modelo {
             System.out.println("CodeWord: " + codeWord);
 
             if (this.randomNumber(0, 1) == 1) {//Si se cambia la palabra de codigo o no.
-
                 int bitToChange = this.randomNumber(0, codeWord.length());//Posicion del bit a cambiar.
-
                 String[] aux = codeWord.split("");//Separo el codeWord, para poder cambiar un bit.
                 aux[bitToChange] = Integer.toString((Integer.parseInt(aux[bitToChange]) + 1) % 2);//Cambio el bit aleatorio.
-
                 this.codeWordWithErrors += String.join("", aux) + "\n";
             } else { //Este else es en caso de que no se 'desee' cambiar un codeWord. Se debe recordar que todo es completamente aleatorio.
-
                 this.codeWordWithErrors += codeWord + "\n";
             }
         }
@@ -253,7 +240,6 @@ public class Modelo {
      * almenos un error en una palabra de codigo.
      */
     public boolean Sindrome() {
-
         for (String i : this.getCodeWordWithErrorsAsVector()) {
             System.out.println(i);
             if (i.split("1").length % 2 == 1) {
@@ -261,7 +247,6 @@ public class Modelo {
                 return true;
             }
         }
-
         return false;
     }
 
