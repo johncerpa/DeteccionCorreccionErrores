@@ -10,7 +10,7 @@ public class Main {
         Modelo modelo = new Modelo();
         Vista vista = new Vista();
         VistaDeteccion vistaDeteccion = new VistaDeteccion();
-        Controlador controlador = new Controlador(vista, modelo, vistaDeteccion);
+        Controlador controlador = new Controlador(vista, vistaDeteccion, modelo);
         controlador.iniciar();
         vista.setVisible(true);
     }

@@ -19,8 +19,7 @@ public class Controlador implements ActionListener {
     private final VistaDeteccion vistaDeteccion;
     private final Modelo modelo;
 
-    public Controlador(Vista vista, Modelo modelo, VistaDeteccion vistaDeteccion) {
-        
+    public Controlador(Vista vista, VistaDeteccion vistaDeteccion, Modelo modelo) {
         this.vista = vista;
         this.modelo = modelo;
         this.vistaDeteccion = vistaDeteccion;
@@ -53,40 +52,37 @@ public class Controlador implements ActionListener {
             
             if (archivo != null) {
                 
-                modelo.setArchivo(archivo);
-                vistaDeteccion.txtNombreArchivo.setText(modelo.getNombreConExtension());
+                modelo.modeloDBP.setArchivo(archivo);
+                vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
                 
-                if (modelo.getInfoArchivo().compareTo("") == 0) {
+                if (modelo.modeloDBP.getInfoArchivo().compareTo("") == 0) {
                     
                     JOptionPane.showMessageDialog(null, "Frase invalida, por favo corriga la frase.");
                 } else {            
-                    vistaDeteccion.areaEntrada.setText(modelo.getInfoArchivo());
-                    modelo.str2Bin();
-                    vistaDeteccion.areaSalida.setText(modelo.getCodeWord());
+                    vistaDeteccion.areaEntrada.setText(modelo.modeloDBP.getInfoArchivo());
+                    modelo.modeloDBP.str2Bin();
+                    vistaDeteccion.areaSalida.setText(modelo.modeloDBP.getCodeWord());
                 }
             }
         }
 
         if (this.vistaDeteccion.btnEnviar == e.getSource()) {
-            if (modelo.archivoValido) {
-                modelo.sendData();
+            if (modelo.modeloDBP.archivoValido) {
+                modelo.modeloDBP.sendData();
             } else {
-                JOptionPane.showMessageDialog(null, modelo.error + ". Por favor, seleccione el archivo a enviar.");
+                JOptionPane.showMessageDialog(null, modelo.modeloDBP.error + ". Por favor, seleccione el archivo a enviar.");
             }
         }
         
         if (this.vistaDeteccion.btnReceptar == e.getSource()){
             
-            if (modelo.Sindrome()) {
-                JOptionPane.showMessageDialog(null, modelo.error);
+            if (modelo.modeloDBP.Sindrome()) {
+                JOptionPane.showMessageDialog(null, modelo.modeloDBP.error);
             } else {
-                modelo.setDataWord(modelo.codeWordToDataWord());
-                
+                modelo.modeloDBP.setDataWord(modelo.modeloDBP.codeWordToDataWord());
                 try (PrintWriter pw = new PrintWriter("sentData.txt")) {
-                    
                     //pw.print(modelo.getCodeWord());
                     //pw.print(modelo.bin2Str());
-                    
                 } catch (Exception ex) {
                     System.out.println(ex.toString());
                 }
@@ -100,19 +96,12 @@ public class Controlador implements ActionListener {
      * @return File
      */
     public File abrirChooser() {
-        
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("Escoja el archivo");
-
         FileFilter filtro_txt = new FileNameExtensionFilter("Solo archivos .txt", "txt");
         chooser.setFileFilter(filtro_txt);
-
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            return chooser.getSelectedFile();
-        }
-        
-        return null;
+        return (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) ? chooser.getSelectedFile() : null;
     }
     
     
