@@ -35,6 +35,14 @@ public class DeteccionBitParidad {
     public void setArchivo(File archivo) {
         this.archivo = archivo;
     }
+    
+    public String getUbicacionCarpeta(File archivo) {
+        return archivo.getParentFile().getAbsolutePath();
+    }
+    
+    public File getArchivo() {
+        return archivo;
+    }
 
     public String getNombreConExtension() {
         return archivo.getName();

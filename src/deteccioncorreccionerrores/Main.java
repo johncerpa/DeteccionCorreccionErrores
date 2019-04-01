@@ -2,16 +2,14 @@ package deteccioncorreccionerrores;
 
 import controlador.Controlador;
 import modelo.Modelo;
-import vista.Vista;
-import vista.VistaDeteccion;
+import vista.Vistas;
 
 public class Main {
     public static void main(String[] args) {
         Modelo modelo = new Modelo();
-        Vista vista = new Vista();
-        VistaDeteccion vistaDeteccion = new VistaDeteccion();
-        Controlador controlador = new Controlador(vista, vistaDeteccion, modelo);
+        Vistas vistas = new Vistas();
+        Controlador controlador = new Controlador(vistas, modelo);
         controlador.iniciar();
-        vista.setVisible(true);
+        vistas.vistaPrincipal.setVisible(true);
     }
 }

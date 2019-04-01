@@ -1,69 +1,97 @@
 package controlador;
 
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import modelo.Modelo;
-import vista.Vista;
+import vista.VistaPrincipal;
 import vista.VistaDeteccion;
+import vista.Vistas;
 
 public class Controlador implements ActionListener {
 
-    private final Vista vista;
-    private final VistaDeteccion vistaDeteccion;
+    private final Vistas vistas;
     private final Modelo modelo;
 
-    public Controlador(Vista vista, VistaDeteccion vistaDeteccion, Modelo modelo) {
-        this.vista = vista;
+    public Controlador(Vistas vistas, Modelo modelo) {
+        this.vistas = vistas;
         this.modelo = modelo;
-        this.vistaDeteccion = vistaDeteccion;
-        this.vista.btnDeteccion.addActionListener(this);
-        this.vistaDeteccion.btnAbrir.addActionListener(this);
-        this.vistaDeteccion.btnReceptar.addActionListener(this);
+        vistas.vistaDeteccion.btnUbicar.setEnabled(false);
+        vistas.vistaPrincipal.btnDeteccion.addActionListener(this);
+        vistas.vistaDeteccion.btnEnviar.addActionListener(this);
+        vistas.vistaDeteccion.btnReceptar.addActionListener(this);
+        vistas.vistaDeteccion.btnUbicar.addActionListener(this);
     }
 
     public void iniciar() {
-        vista.setTitle("Deteccion y correccion de errores - UniCode");
-        vista.setLocationRelativeTo(null);
+        vistas.vistaPrincipal.setTitle("Deteccion y correccion de errores - UniCode");
+        vistas.vistaPrincipal.setLocationRelativeTo(null);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        if (this.vista.btnDeteccion == e.getSource()) {
-            vistaDeteccion.setTitle("Deteccion de errores");
-            vistaDeteccion.setLocationRelativeTo(null);
-            vistaDeteccion.setVisible(true);
-            vistaDeteccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+        // --- INTERFAZ PRINCIPAL --- //
+        
+        if (vistas.vistaPrincipal.btnDeteccion == e.getSource()) {
+            vistas.vistaDeteccion.setTitle("Deteccion de errores con bit de paridad");
+            vistas.vistaDeteccion.setLocationRelativeTo(null);
+            vistas.vistaDeteccion.setVisible(true);
+            vistas.vistaDeteccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+        
+        if (vistas.vistaPrincipal.btnCorreccion == e.getSource()) {
+            vistas.vistaCorreccion.setTitle("Correccion de errores con Hamming");
+            vistas.vistaCorreccion.setLocationRelativeTo(null);
+            vistas.vistaCorreccion.setVisible(true);
+            vistas.vistaCorreccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
 
-        if (this.vistaDeteccion.btnAbrir == e.getSource()) {
+        
+        // --- INTERFAZ DETECCCION --- //
+        
+        if (vistas.vistaDeteccion.btnEnviar == e.getSource()) {
             File archivo = this.abrirChooser("txt");
             if (archivo != null) {
                 modelo.modeloDBP.setArchivo(archivo);
-                vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
+                vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
                 String infoArchivo = modelo.modeloDBP.getInfoArchivo(true);
                 if (infoArchivo.compareTo("") == 0) {
                     JOptionPane.showMessageDialog(null, "Frase invalida, por favo corriga la frase.");
                 } else {
-                    vistaDeteccion.areaEntrada.setText(infoArchivo);
+                    vistas.vistaDeteccion.areaEntrada.setText(infoArchivo);
                     modelo.modeloDBP.str2Bin();
-                    vistaDeteccion.areaSalida.setText(modelo.modeloDBP.getCodeWord());
+                    vistas.vistaDeteccion.btnUbicar.setEnabled(true);
+                    vistas.vistaDeteccion.areaSalida.setText(modelo.modeloDBP.getCodeWord());
                 }
             }
         }
+        
+        if (vistas.vistaDeteccion.btnUbicar == e.getSource()) {
+            String ubicacion = modelo.modeloDBP.getUbicacionCarpeta(modelo.modeloDBP.getArchivo());
+            System.out.println(ubicacion);
+            try {
+                Desktop.getDesktop().open(new File(ubicacion));
+            } catch (IOException ex) {
+                System.out.println("No se pudo abrir en el explorador la carpeta en esta ubicación.");
+            }
+        }
 
-        if (this.vistaDeteccion.btnReceptar == e.getSource()) {
+        if (vistas.vistaDeteccion.btnReceptar == e.getSource()) {
             File archivo = this.abrirChooser("btp");
             if (archivo != null) {
                 modelo.modeloDBP.setArchivo(archivo);
-                vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
+                vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
                 String infoArchivo = modelo.modeloDBP.getInfoArchivo(false);
                 if (infoArchivo.compareTo("") == 0) {
                     JOptionPane.showMessageDialog(null, "Archivo vacio");
@@ -84,6 +112,9 @@ public class Controlador implements ActionListener {
                 }
             }
         }
+        
+        // --- INTERFAZ CORRECCION --- //
+        
 
     }
 
