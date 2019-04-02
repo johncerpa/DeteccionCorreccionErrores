@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 public class DeteccionBitParidad {
 
@@ -36,17 +35,9 @@ public class DeteccionBitParidad {
         this.archivo = archivo;
     }
     
-    public String getUbicacionCarpeta(File archivo) {
-        return archivo.getParentFile().getAbsolutePath();
-    }
-    
     public File getArchivo() {
         return archivo;
-    }
-
-    public String getNombreConExtension() {
-        return archivo.getName();
-    }
+    }    
 
     public String getNombreSinExtension() {
         int indice = archivo.getName().indexOf('.');
