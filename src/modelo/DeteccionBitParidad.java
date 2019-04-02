@@ -112,9 +112,6 @@ public class DeteccionBitParidad {
                 return contenido;
             }
             error = "La frase a enviar no es valida";
-        } catch (FileNotFoundException ex) {
-            System.out.println("Archivo no encontrado " + ex.toString());
-            error = "El archivo no ha sido encontrado";
         } catch (IOException ex) {
             System.out.println("Error de lectura " + ex.toString());
             error = "Disculpe. Ocurrio un error de lectura";

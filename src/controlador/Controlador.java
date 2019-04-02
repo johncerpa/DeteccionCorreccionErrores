@@ -71,7 +71,7 @@ public class Controlador implements ActionListener {
                 vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.getNombreConExtension(modelo.modeloDBP.getArchivo()));
                 String infoArchivo = modelo.modeloDBP.getInfoArchivo(true);
                 if (infoArchivo.compareTo("") == 0) {
-                    JOptionPane.showMessageDialog(null, "Frase invalida, por favo corriga la frase.");
+                    JOptionPane.showMessageDialog(null, "Frase invalida, por favor corriga la frase.");
                 } else {
                     vistas.vistaDeteccion.areaEntrada.setText(infoArchivo);
                     modelo.modeloDBP.str2Bin();
@@ -122,15 +122,15 @@ public class Controlador implements ActionListener {
             if (archivo != null) {
                 modelo.modeloHamming.setArchivo(archivo);
                 vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(modelo.modeloHamming.getArchivo()));
-//                String infoArchivo = modelo.modeloDBP.getInfoArchivo(true);
-//                if (infoArchivo.compareTo("") == 0) {
-//                    JOptionPane.showMessageDialog(null, "Frase invalida, por favo corriga la frase.");
-//                } else {
-//                    vistas.vistaDeteccion.areaEntrada.setText(infoArchivo);
-//                    modelo.modeloDBP.str2Bin();
-//                    vistas.vistaDeteccion.btnUbicar.setEnabled(true);
-//                    vistas.vistaDeteccion.areaSalida.setText(modelo.modeloDBP.getCodeWord());
-//                }
+                String infoArchivo = modelo.modeloHamming.getInfoArchivo(modelo.modeloHamming.getArchivo());
+                if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
+                    JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);
+                } else {
+                    vistas.vistaCorreccion.areaEntrada.setText(infoArchivo);
+                    // Procesar entrada (palabras de datos y palabras de codigos y guardar en .ham) y mostrar en salida
+                    vistas.vistaCorreccion.btnUbicar.setEnabled(true);
+                    vistas.vistaCorreccion.areaSalida.setText("");
+                }
             }
         }
         
