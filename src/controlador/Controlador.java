@@ -6,16 +6,12 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import modelo.Modelo;
-import vista.VistaPrincipal;
-import vista.VistaDeteccion;
 import vista.Vistas;
 
 public class Controlador implements ActionListener {
@@ -25,12 +21,20 @@ public class Controlador implements ActionListener {
 
     public Controlador(Vistas vistas, Modelo modelo) {
         this.vistas = vistas;
-        this.modelo = modelo;
-        vistas.vistaDeteccion.btnUbicar.setEnabled(false);
+        this.modelo = modelo;        
+        // --- BIND Vista Principal --- //
         vistas.vistaPrincipal.btnDeteccion.addActionListener(this);
+        vistas.vistaPrincipal.btnCorreccion.addActionListener(this);
+        // --- BIND Vista Deteccion --- //
+        vistas.vistaDeteccion.btnUbicar.setEnabled(false);
         vistas.vistaDeteccion.btnEnviar.addActionListener(this);
         vistas.vistaDeteccion.btnReceptar.addActionListener(this);
         vistas.vistaDeteccion.btnUbicar.addActionListener(this);
+        // --- BIND Vista Deteccion --- //
+        vistas.vistaCorreccion.btnUbicar.setEnabled(false);
+        vistas.vistaCorreccion.btnEnviar.addActionListener(this);
+        vistas.vistaCorreccion.btnReceptar.addActionListener(this);
+        vistas.vistaCorreccion.btnUbicar.addActionListener(this); 
     }
 
     public void iniciar() {
@@ -63,10 +67,10 @@ public class Controlador implements ActionListener {
             File archivo = this.abrirChooser("txt");
             if (archivo != null) {
                 modelo.modeloDBP.setArchivo(archivo);
-                vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
+                vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.getNombreConExtension(modelo.modeloDBP.getArchivo()));
                 String infoArchivo = modelo.modeloDBP.getInfoArchivo(true);
                 if (infoArchivo.compareTo("") == 0) {
-                    JOptionPane.showMessageDialog(null, "Frase invalida, por favo corriga la frase.");
+                    JOptionPane.showMessageDialog(null, "Frase invalida, por favor corriga la frase.");
                 } else {
                     vistas.vistaDeteccion.areaEntrada.setText(infoArchivo);
                     modelo.modeloDBP.str2Bin();
@@ -77,8 +81,7 @@ public class Controlador implements ActionListener {
         }
         
         if (vistas.vistaDeteccion.btnUbicar == e.getSource()) {
-            String ubicacion = modelo.modeloDBP.getUbicacionCarpeta(modelo.modeloDBP.getArchivo());
-            System.out.println(ubicacion);
+            String ubicacion = modelo.getUbicacionCarpeta(modelo.modeloDBP.getArchivo());
             try {
                 Desktop.getDesktop().open(new File(ubicacion));
             } catch (IOException ex) {
@@ -87,10 +90,10 @@ public class Controlador implements ActionListener {
         }
 
         if (vistas.vistaDeteccion.btnReceptar == e.getSource()) {
-            File archivo = this.abrirChooser("btp");
+            File archivo = abrirChooser("btp");
             if (archivo != null) {
                 modelo.modeloDBP.setArchivo(archivo);
-                vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.modeloDBP.getNombreConExtension());
+                vistas.vistaDeteccion.txtNombreArchivo.setText(modelo.getNombreConExtension(modelo.modeloDBP.getArchivo()));
                 String infoArchivo = modelo.modeloDBP.getInfoArchivo(false);
                 if (infoArchivo.compareTo("") == 0) {
                     JOptionPane.showMessageDialog(null, "Archivo vacio");
@@ -113,15 +116,34 @@ public class Controlador implements ActionListener {
         }
         
         // --- INTERFAZ CORRECCION --- //
+        if (vistas.vistaCorreccion.btnEnviar == e.getSource()) {
+            File archivo = abrirChooser("txt");
+            if (archivo != null) {
+                modelo.modeloHamming.setArchivo(archivo);
+                vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(modelo.modeloHamming.getArchivo()));
+                String infoArchivo = modelo.modeloHamming.getInfoArchivo(modelo.modeloHamming.getArchivo());
+                if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
+                    JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);
+                } else {
+                    vistas.vistaCorreccion.areaEntrada.setText(infoArchivo);
+                    // Procesar entrada (palabras de datos y palabras de codigos y guardar en .ham) y mostrar en salida
+                    vistas.vistaCorreccion.btnUbicar.setEnabled(true);
+                    vistas.vistaCorreccion.areaSalida.setText("");
+                }
+            }
+        }
         
+        if (vistas.vistaDeteccion.btnUbicar == e.getSource()) {
+            String ubicacion = modelo.getUbicacionCarpeta(modelo.modeloHamming.getArchivo());
+            try {
+                Desktop.getDesktop().open(new File(ubicacion));
+            } catch (IOException ex) {
+                System.out.println("No se pudo abrir en el explorador la carpeta en esta ubicación.");
+            }
+        }
 
     }
 
-    /**
-     * Menu que se encarga de seleccionar un archivo y retornarlo.
-     * @param extension
-     * @return File
-     */
     public File abrirChooser(String extension) {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));

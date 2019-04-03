@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 public class DeteccionBitParidad {
 
@@ -36,17 +35,9 @@ public class DeteccionBitParidad {
         this.archivo = archivo;
     }
     
-    public String getUbicacionCarpeta(File archivo) {
-        return archivo.getParentFile().getAbsolutePath();
-    }
-    
     public File getArchivo() {
         return archivo;
-    }
-
-    public String getNombreConExtension() {
-        return archivo.getName();
-    }
+    }    
 
     public String getNombreSinExtension() {
         int indice = archivo.getName().indexOf('.');
@@ -121,9 +112,6 @@ public class DeteccionBitParidad {
                 return contenido;
             }
             error = "La frase a enviar no es valida";
-        } catch (FileNotFoundException ex) {
-            System.out.println("Archivo no encontrado " + ex.toString());
-            error = "El archivo no ha sido encontrado";
         } catch (IOException ex) {
             System.out.println("Error de lectura " + ex.toString());
             error = "Disculpe. Ocurrio un error de lectura";
