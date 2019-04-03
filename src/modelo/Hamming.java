@@ -27,19 +27,24 @@ public class Hamming {
             String linea;
             while ((linea = br.readLine()) != null) {
                 contenido += linea;
-            }
-            // Comprueba validez del archivo (max. longitud: 16 y solo binario)
-            if (contenido.length() <= 16) {
-                for (int i = 0; i < contenido.length(); i++) {
-                    if (contenido.charAt(i) != '0' && contenido.charAt(i) != '1') {
-                        archivoValido = false;
-                        error = "El archivo solo puede conter bits (0 y 1)";
-                    }
+                if (linea.length() > 16) {
+                    archivoValido = false;
+                    error = "La longitud maxima es de 16 bits";
+                    break;
                 }
-            } else {
-                archivoValido = false;
-                error = "El archivo debe contener maximo 16 bits";
+                for (int i = 0; i < linea.length(); i++) {
+                    if (linea.charAt(i) != '0' && linea.charAt(i) != '1') {
+                        archivoValido = false;
+                        error = "El archivo solo puede contener bits (0 y 1)";
+                        break;
+                    }
+                }       
+                // En caso de que haya un caracter invalido
+                if (!archivoValido) {
+                    break;
+                }
             }
+
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
