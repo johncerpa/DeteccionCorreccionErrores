@@ -56,7 +56,6 @@ public class Controlador implements ActionListener {
             vistas.vistaCorreccion.setVisible(true);
             vistas.vistaCorreccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
-
         
         // --- INTERFAZ DETECCCION --- //
         
@@ -103,7 +102,7 @@ public class Controlador implements ActionListener {
                         JOptionPane.showMessageDialog(null, "La información enviada se recibió de manera correcta.");
                         modelo.modeloDBP.setDataWord(modelo.modeloDBP.codeWordToDataWord());
                         try (PrintWriter pw = new PrintWriter(modelo.modeloDBP.getNombreSinExtension() + ".txt")) {
-                            pw.print(modelo.modeloDBP.getDataWord());
+                            //pw.print(modelo.modeloDBP.getDataWord());
                             pw.print(modelo.modeloDBP.bin2Str());
                         } catch (Exception ex) {
                             System.out.println(ex.toString());
