@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class Hamming {
 
@@ -17,14 +18,21 @@ public class Hamming {
     public String error;
     private ArrayList<String> palabrasDeDato;
     private ArrayList<String> palabrasDeCodigo;
+    private boolean errorEnRecepcion = false;
+    private ArrayList<Error> errores;
 
     public Hamming() {
         palabrasDeDato = new ArrayList();
         palabrasDeCodigo = new ArrayList();
+        errores = new ArrayList();
     }
 
     public ArrayList<String> getPalabrasDeDato() {
         return palabrasDeDato;
+    }
+
+    public ArrayList<Error> getErrores() {
+        return errores;
     }
 
     public ArrayList<String> getPalabrasDeCodigo() {
@@ -52,6 +60,7 @@ public class Hamming {
             // Se reinician las listas
             palabrasDeDato.clear();
             palabrasDeCodigo.clear();
+            errores.clear();
             OUTER:
             while ((linea = br.readLine()) != null) {
                 switch (longitudMaxima) {
@@ -102,6 +111,30 @@ public class Hamming {
             }
         } else {
             System.out.println("ERROR: Lista nula");
+        }
+        return resultado;
+    }
+
+    public String listaParaImprimirPorLineas(ArrayList<String> lista, ArrayList<Error> errores) {
+        String resultado = "";
+        if (lista != null && errores != null) {
+            int j = 0, i = 0;
+            for (String p : lista) {
+                boolean flag = false;
+                if (j < errores.size()) {
+                    int indice = errores.get(j).indiceLinea;
+                    int bitError = errores.get(j).posicionError;
+                    if (indice == i) {
+                        resultado += (p + "     Ocurrio un error en el bit " + bitError + " y se corrigio" + System.lineSeparator());
+                        j++;
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    resultado += (p + System.lineSeparator());
+                }
+                i++;
+            }
         }
         return resultado;
     }
@@ -184,10 +217,14 @@ public class Hamming {
     public void receptar(ArrayList<String> codigos) {
         palabrasDeDato.clear();
         String resultado = "";
+        int i = 0;
         for (String codigo : codigos) {
-            String dato = comprobarCodigo(codigo);
+            String dato = comprobarCodigo(codigo, i);
             palabrasDeDato.add(dato);
             resultado += (dato + System.lineSeparator());
+        }
+        if (errorEnRecepcion) {
+            JOptionPane.showMessageDialog(null, "Se detectaron errores en el archivo recibido, se han corregido y guardado satisfactoriamente en un archivo.");
         }
         try (PrintWriter pw = new PrintWriter("receivedData.txt", "UTF-8")) {
             pw.print(resultado);
@@ -196,7 +233,7 @@ public class Hamming {
         }
     }
 
-    public String comprobarCodigo(String codigo) {
+    public String comprobarCodigo(String codigo, int linea) {
         String pDato = "";
 
         if (codigo.length() == 21) {
@@ -243,11 +280,12 @@ public class Hamming {
             if (c == 0) {
                 pDato = "" + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
             } else {
+                errorEnRecepcion = true;
+                errores.add(new Error(linea, c));
                 b[c] = b[c] == '0' ? '1' : '0';
                 pDato = "" + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
             }
         }
         return pDato;
     }
-
 }

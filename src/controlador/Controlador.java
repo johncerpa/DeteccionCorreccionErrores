@@ -146,7 +146,7 @@ public class Controlador implements ActionListener {
                 } else {
                     vistas.vistaCorreccion.areaEntrada.setText(infoArchivo);
                     modelo.modeloHamming.receptar(modelo.modeloHamming.getPalabrasDeCodigo());
-                    String salida = modelo.modeloHamming.listaParaImprimirPorLineas(modelo.modeloHamming.getPalabrasDeDato());
+                    String salida = modelo.modeloHamming.listaParaImprimirPorLineas(modelo.modeloHamming.getPalabrasDeDato(), modelo.modeloHamming.getErrores());
                     vistas.vistaCorreccion.areaSalida.setText(salida);
                     vistas.vistaCorreccion.btnUbicar.setEnabled(true);
                 }
