@@ -39,7 +39,7 @@ public class DeteccionBitParidad {
         return archivo;
     }    
 
-    public String getNombreSinExtension() {
+    public String getNombreSinExtension(File archivo) {
         int indice = archivo.getName().indexOf('.');
         return archivo.getName().substring(0, indice);
     }
@@ -69,9 +69,10 @@ public class DeteccionBitParidad {
     }
 
     /**
-     * Me retorna la palabra que ha sido enviada por el 'medio fisico', pero en
+     * Retorna la palabra que ha sido enviada por el 'medio fisico', pero en
      * forma de vector, separando cada palabra de codigo para realizar un mejor
      * manejo de la informacion
+     * @return 
      */
     public String[] getCodeWordWithErrorsAsVector() {
         return codeWordWithErrors.split(System.lineSeparator());
@@ -146,7 +147,7 @@ public class DeteccionBitParidad {
     public String str2Bin() {
         String resultado = "";
         byte[] bytes = contenidoArchivo.getBytes(StandardCharsets.US_ASCII); // Se obtienen los valores ASCII
-        try (PrintWriter pw = new PrintWriter(getNombreSinExtension() + ".btp", "UTF-8")) {
+        try (PrintWriter pw = new PrintWriter(getNombreSinExtension(archivo) + ".btp", "UTF-8")) {
             int cont = 0;
             String binWord = ""; //Palabra de codigo por linea
             String bin;

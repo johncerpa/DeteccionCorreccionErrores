@@ -21,7 +21,7 @@ public class Controlador implements ActionListener {
 
     public Controlador(Vistas vistas, Modelo modelo) {
         this.vistas = vistas;
-        this.modelo = modelo;        
+        this.modelo = modelo;
         // --- BIND Vista Principal --- //
         vistas.vistaPrincipal.btnDeteccion.addActionListener(this);
         vistas.vistaPrincipal.btnCorreccion.addActionListener(this);
@@ -30,11 +30,11 @@ public class Controlador implements ActionListener {
         vistas.vistaDeteccion.btnEnviar.addActionListener(this);
         vistas.vistaDeteccion.btnReceptar.addActionListener(this);
         vistas.vistaDeteccion.btnUbicar.addActionListener(this);
-        // --- BIND Vista Deteccion --- //
+        // --- BIND Vista Correccion --- //
         vistas.vistaCorreccion.btnUbicar.setEnabled(false);
         vistas.vistaCorreccion.btnEnviar.addActionListener(this);
         vistas.vistaCorreccion.btnReceptar.addActionListener(this);
-        vistas.vistaCorreccion.btnUbicar.addActionListener(this); 
+        vistas.vistaCorreccion.btnUbicar.addActionListener(this);
     }
 
     public void iniciar() {
@@ -44,16 +44,15 @@ public class Controlador implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+
         // --- INTERFAZ PRINCIPAL --- //
-        
         if (vistas.vistaPrincipal.btnDeteccion == e.getSource()) {
             vistas.vistaDeteccion.setTitle("Deteccion de errores con bit de paridad");
             vistas.vistaDeteccion.setLocationRelativeTo(null);
             vistas.vistaDeteccion.setVisible(true);
             vistas.vistaDeteccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
-        
+
         if (vistas.vistaPrincipal.btnCorreccion == e.getSource()) {
             vistas.vistaCorreccion.setTitle("Correccion de errores con Hamming");
             vistas.vistaCorreccion.setLocationRelativeTo(null);
@@ -61,9 +60,7 @@ public class Controlador implements ActionListener {
             vistas.vistaCorreccion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
 
-        
         // --- INTERFAZ DETECCCION --- //
-        
         if (vistas.vistaDeteccion.btnEnviar == e.getSource()) {
             File archivo = this.abrirChooser("txt");
             if (archivo != null) {
@@ -80,7 +77,7 @@ public class Controlador implements ActionListener {
                 }
             }
         }
-        
+
         if (vistas.vistaDeteccion.btnUbicar == e.getSource()) {
             String ubicacion = modelo.getUbicacionCarpeta(modelo.modeloDBP.getArchivo());
             try {
@@ -105,7 +102,7 @@ public class Controlador implements ActionListener {
                     } else {
                         JOptionPane.showMessageDialog(null, "La información enviada se recibió de manera correcta.");
                         modelo.modeloDBP.setDataWord(modelo.modeloDBP.codeWordToDataWord());
-                        try (PrintWriter pw = new PrintWriter(modelo.modeloDBP.getNombreSinExtension() + ".txt")) {
+                        try (PrintWriter pw = new PrintWriter(Modelo.getNombreSinExtension(modelo.modeloDBP.getArchivo()) + ".txt")) {
                             pw.print(modelo.modeloDBP.getDataWord());
                             pw.print(modelo.modeloDBP.bin2Str());
                         } catch (Exception ex) {
@@ -115,26 +112,50 @@ public class Controlador implements ActionListener {
                 }
             }
         }
-        
+
         // --- INTERFAZ CORRECCION --- //
         if (vistas.vistaCorreccion.btnEnviar == e.getSource()) {
             File archivo = abrirChooser("txt");
             if (archivo != null) {
                 modelo.modeloHamming.setArchivo(archivo);
-                vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(modelo.modeloHamming.getArchivo()));
-                String infoArchivo = modelo.modeloHamming.getInfoArchivo(modelo.modeloHamming.getArchivo());
+                // Mostrar archivo en IU
+                vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(archivo));
+                // Se guardan las palabras de datos en una lista
+                String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, 16);
                 if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
                     JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);
                 } else {
                     vistas.vistaCorreccion.areaEntrada.setText(infoArchivo);
-                    // Procesar entrada (palabras de datos y palabras de codigos y guardar en .ham) y mostrar en salida
+                    // Procesar entrada (datos -> codigos y guardar en .ham) y mostrar en salida
+                    modelo.modeloHamming.enviar(); // Convertir datos -> codigos
+                    String salida = modelo.modeloHamming.listaParaImprimirPorLineas(modelo.modeloHamming.getPalabrasDeCodigo());
+                    vistas.vistaCorreccion.areaSalida.setText(salida);
                     vistas.vistaCorreccion.btnUbicar.setEnabled(true);
-                    vistas.vistaCorreccion.areaSalida.setText("");
                 }
             }
         }
-        
-        if (vistas.vistaDeteccion.btnUbicar == e.getSource()) {
+
+        if (vistas.vistaCorreccion.btnReceptar == e.getSource()) {
+            File archivo = abrirChooser("ham");
+            if (archivo != null) {
+                modelo.modeloHamming.setArchivo(archivo);
+                String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, 21);
+                vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(archivo));
+                
+                if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
+                    JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);
+                } else {
+                    vistas.vistaCorreccion.areaEntrada.setText(infoArchivo);
+                    modelo.modeloHamming.receptar(modelo.modeloHamming.getPalabrasDeCodigo());
+                    String salida = modelo.modeloHamming.listaParaImprimirPorLineas(modelo.modeloHamming.getPalabrasDeDato());
+                    vistas.vistaCorreccion.areaSalida.setText(salida);
+                    vistas.vistaCorreccion.btnUbicar.setEnabled(true);
+                }
+
+            }
+        }
+
+        if (vistas.vistaCorreccion.btnUbicar == e.getSource()) {
             String ubicacion = modelo.getUbicacionCarpeta(modelo.modeloHamming.getArchivo());
             try {
                 Desktop.getDesktop().open(new File(ubicacion));

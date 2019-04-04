@@ -20,4 +20,9 @@ public class Modelo {
         return archivo.getName();
     }
     
+    public static String getNombreSinExtension(File archivo) {
+        int indice = archivo.getName().indexOf('.');
+        return archivo.getName().substring(0, indice);
+    }
+    
 }
