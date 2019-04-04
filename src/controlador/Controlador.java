@@ -140,8 +140,7 @@ public class Controlador implements ActionListener {
             if (archivo != null) {
                 modelo.modeloHamming.setArchivo(archivo);
                 String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, 21);
-                vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(archivo));
-                
+                vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(archivo));                
                 if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
                     JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);
                 } else {

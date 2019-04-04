@@ -20,7 +20,7 @@ public class Hamming {
 
     public Hamming() {
         palabrasDeDato = new ArrayList();
-        palabrasDeCodigo = new ArrayList(); 
+        palabrasDeCodigo = new ArrayList();
     }
 
     public ArrayList<String> getPalabrasDeDato() {
@@ -52,14 +52,24 @@ public class Hamming {
             // Se reinician las listas
             palabrasDeDato.clear();
             palabrasDeCodigo.clear();
+            OUTER:
             while ((linea = br.readLine()) != null) {
-                if (longitudMaxima == 16) {
-                    palabrasDeDato.add(linea);
-                } else if (longitudMaxima == 21) {
-                    palabrasDeCodigo.add(linea);
-                }                
+                switch (longitudMaxima) {
+                    case 8:
+                    case 16:
+                        palabrasDeDato.add(linea);
+                        break;
+                    case 12:
+                    case 21:
+                        palabrasDeCodigo.add(linea);
+                        break;
+                    default:
+                        archivoValido = false;
+                        error = "Esta longitud no es permitida";
+                        break OUTER;
+                }
                 contenido += (linea + System.lineSeparator());
-                if (linea.length() == longitudMaxima) {
+                if (linea.length() == 8 || linea.length() == 16 || linea.length() == 12 || linea.length() == 21) {
                     for (int i = 0; i < linea.length(); i++) {
                         if (linea.charAt(i) != '0' && linea.charAt(i) != '1') {
                             archivoValido = false;
@@ -69,7 +79,7 @@ public class Hamming {
                     }
                 } else {
                     archivoValido = false;
-                    error = "La longitud debe ser de " + longitudMaxima + " bits";
+                    error = "La longitud debe ser de maximo " + longitudMaxima + " bits";
                 }
                 if (!archivoValido) {
                     break;
@@ -98,31 +108,53 @@ public class Hamming {
 
     public String getParidad(String data) {
         char[] b = new char[22];
-        b[3] = data.charAt(15);
-        b[5] = data.charAt(14);
-        b[6] = data.charAt(13);
-        b[7] = data.charAt(12);
-        b[9] = data.charAt(11);
-        b[10] = data.charAt(10);
-        b[11] = data.charAt(9);
-        b[12] = data.charAt(8);
-        b[13] = data.charAt(7);
-        b[14] = data.charAt(6);
-        b[15] = data.charAt(5);
-        b[17] = data.charAt(3);
-        b[18] = data.charAt(3);
-        b[19] = data.charAt(2);
-        b[20] = data.charAt(1);
-        b[21] = data.charAt(0);
+        char[] b1 = new char[13];
 
-        //  Bits de paridad
-        b[1] = XOR(b[3], b[5], b[7], b[9], b[11], b[13], b[15], b[18], b[19], b[21]);
-        b[2] = XOR(b[3], b[6], b[7], b[10], b[11], b[14], b[15], b[18], b[19]);
-        b[4] = XOR(b[5], b[6], b[7], b[12], b[13], b[14], b[15], b[20], b[21]);
-        b[8] = XOR(b[9], b[10], b[11], b[12], b[13], b[14], b[15]);
-        b[16] = XOR(b[17], b[18], b[19], b[20], b[21]);
+        if (data.length() == 16) {
+            b[3] = data.charAt(15);
+            b[5] = data.charAt(14);
+            b[6] = data.charAt(13);
+            b[7] = data.charAt(12);
+            b[9] = data.charAt(11);
+            b[10] = data.charAt(10);
+            b[11] = data.charAt(9);
+            b[12] = data.charAt(8);
+            b[13] = data.charAt(7);
+            b[14] = data.charAt(6);
+            b[15] = data.charAt(5);
+            b[17] = data.charAt(3);
+            b[18] = data.charAt(3);
+            b[19] = data.charAt(2);
+            b[20] = data.charAt(1);
+            b[21] = data.charAt(0);
 
-        return "" + b[21] + b[20] + b[19] + b[18] + b[17] + b[16] + b[15] + b[14] + b[13] + b[12] + b[11] + b[10] + b[9] + b[8] + b[7] + b[6] + b[5] + b[4] + b[3] + b[2] + b[1];
+            //  Bits de paridad
+            b[1] = XOR(b[3], b[5], b[7], b[9], b[11], b[13], b[15], b[18], b[19], b[21]);
+            b[2] = XOR(b[3], b[6], b[7], b[10], b[11], b[14], b[15], b[18], b[19]);
+            b[4] = XOR(b[5], b[6], b[7], b[12], b[13], b[14], b[15], b[20], b[21]);
+            b[8] = XOR(b[9], b[10], b[11], b[12], b[13], b[14], b[15]);
+            b[16] = XOR(b[17], b[18], b[19], b[20], b[21]);
+
+            return "" + b[21] + b[20] + b[19] + b[18] + b[17] + b[16] + b[15] + b[14] + b[13] + b[12] + b[11] + b[10] + b[9] + b[8] + b[7] + b[6] + b[5] + b[4] + b[3] + b[2] + b[1];
+        } else if (data.length() == 8) {
+            b[3] = data.charAt(7);
+            b[5] = data.charAt(6);
+            b[6] = data.charAt(5);
+            b[7] = data.charAt(4);
+            b[9] = data.charAt(3);
+            b[10] = data.charAt(2);
+            b[11] = data.charAt(1);
+            b[12] = data.charAt(0);
+
+            // Bits de paridad
+            b[1] = XOR(b[3], b[5], b[7], b[9], b[11]);
+            b[2] = XOR(b[3], b[6], b[7], b[10], b[11]);
+            b[4] = XOR(b[5], b[6], b[7], b[12]);
+            b[8] = XOR(b[9], b[10], b[11], b[12]);
+
+            return "" + b[12] + b[11] + b[10] + b[9] + b[8] + b[7] + b[6] + b[5] + b[4] + b[3] + b[2] + b[1];
+        }
+        return "";
     }
 
     public char XOR(char... b) {
@@ -132,7 +164,7 @@ public class Hamming {
         }
         return ant;
     }
-    
+
     public ArrayList<String> enviar() {
         palabrasDeCodigo = new ArrayList();
         String resultado = "";
@@ -148,7 +180,7 @@ public class Hamming {
         }
         return palabrasDeCodigo;
     }
-    
+
     public void receptar(ArrayList<String> codigos) {
         palabrasDeDato.clear();
         String resultado = "";
@@ -161,31 +193,59 @@ public class Hamming {
             pw.print(resultado);
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             System.out.println(ex.getMessage());
-        } 
-    }
-    
-    public String comprobarCodigo(String codigo) {
-        String pDato;
-        
-        char[] b = new char[22];        
-        for (int i = 1, j = 20; i < 22; i++) {
-            b[i] = codigo.charAt(j);
-            j--;
         }
-        
-        char c1, c2, c4, c8, c16;
-        c1 = XOR(b[1], b[3], b[5], b[7], b[9], b[11], b[13], b[17], b[19], b[21]);
-        c2 = XOR(b[2], b[3], b[6], b[7], b[10], b[11], b[14], b[15], b[18], b[19]);
-        c4 = XOR(b[4], b[5], b[6], b[7], b[12], b[13], b[15], b[20], b[21]);
-        c8 = XOR(b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15]);
-        c16 = XOR(b[17], b[18], b[19], b[20], b[21]);
-        
-        int c = new BigInteger(("" + c16 + c8 + c4 + c2 + c1), 2).intValue();
-        if (c == 0) {
-            pDato = "" + b[21] + b[20] + b[19] + b[18] + b[17] + b[15] + b[14] + b[13] + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
-        } else {
-            b[c] = b[c] == '0' ? '1' : '0';
-            pDato = "" + b[21] + b[20] + b[19] + b[18] + b[17] + b[15] + b[14] + b[13] + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
+    }
+
+    public String comprobarCodigo(String codigo) {
+        String pDato = "";
+
+        if (codigo.length() == 21) {
+            char[] b = new char[22];
+            for (int i = 1, j = 20; i < 22; i++) {
+                b[i] = codigo.charAt(j);
+                j--;
+            }
+
+            char c1, c2, c4, c8, c16;
+            c1 = XOR(b[1], b[3], b[5], b[7], b[9], b[11], b[13], b[17], b[19], b[21]);
+            c2 = XOR(b[2], b[3], b[6], b[7], b[10], b[11], b[14], b[15], b[18], b[19]);
+            c4 = XOR(b[4], b[5], b[6], b[7], b[12], b[13], b[15], b[20], b[21]);
+            c8 = XOR(b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15]);
+            c16 = XOR(b[17], b[18], b[19], b[20], b[21]);
+
+            int c = new BigInteger(("" + c16 + c8 + c4 + c2 + c1), 2).intValue();
+            if (c == 0) {
+                pDato = "" + b[21] + b[20] + b[19] + b[18] + b[17] + b[15] + b[14] + b[13] + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
+            } else {
+                b[c] = b[c] == '0' ? '1' : '0';
+                pDato = "" + b[21] + b[20] + b[19] + b[18] + b[17] + b[15] + b[14] + b[13] + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
+            }
+        } else if (codigo.length() == 12) {
+            char[] b = new char[13];
+            b[1] = codigo.charAt(11);
+            b[2] = codigo.charAt(10);
+            b[3] = codigo.charAt(9);
+            b[4] = codigo.charAt(8);
+            b[5] = codigo.charAt(7);
+            b[6] = codigo.charAt(6);
+            b[7] = codigo.charAt(5);
+            b[8] = codigo.charAt(4);
+            b[9] = codigo.charAt(3);
+            b[10] = codigo.charAt(2);
+            b[11] = codigo.charAt(1);
+            b[12] = codigo.charAt(0);
+            char c1, c2, c4, c8;
+            c1 = XOR(b[1], b[3], b[5], b[7], b[9], b[11]);
+            c2 = XOR(b[2], b[3], b[6], b[7], b[10], b[11]);
+            c4 = XOR(b[4], b[5], b[6], b[7], b[12]);
+            c8 = XOR(b[8], b[9], b[10], b[11], b[12]);
+            int c = new BigInteger(("" + c8 + c4 + c2 + c1), 2).intValue();
+            if (c == 0) {
+                pDato = "" + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
+            } else {
+                b[c] = b[c] == '0' ? '1' : '0';
+                pDato = "" + b[12] + b[11] + b[10] + b[9] + b[7] + b[6] + b[5] + b[3];
+            }
         }
         return pDato;
     }
