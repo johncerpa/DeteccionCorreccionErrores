@@ -262,6 +262,6 @@ public class VistaCambioBits extends javax.swing.JFrame {
     public javax.swing.JButton finishProcess;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JPanel principal;
+    public javax.swing.JPanel principal;
     // End of variables declaration//GEN-END:variables
 }
