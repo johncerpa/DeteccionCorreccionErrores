@@ -56,7 +56,7 @@ public class VistaDeteccion extends javax.swing.JFrame {
         jLabel2.setText("Información de entrada");
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel3.setText("Información enviada");
+        jLabel3.setText("Información de salida");
 
         btnReceptar.setBackground(new java.awt.Color(242, 131, 107));
         btnReceptar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N

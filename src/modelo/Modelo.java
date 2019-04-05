@@ -25,4 +25,8 @@ public class Modelo {
         return archivo.getName().substring(0, indice);
     }
     
+    public static Boolean charEsValido(char a) {
+        return (a >= 65 && a <= 90) || (a >= 97 && a <= 122) || a == 58 || a == 59 || a == 44 || a == 46 || a == 32;
+    }
+    
 }

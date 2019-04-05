@@ -121,11 +121,12 @@ public class Controlador implements ActionListener {
                 // Mostrar archivo en IU
                 vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(archivo));
                 // Se guardan las palabras de datos en una lista
-                String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, 16);
+                String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, true);
                 if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
                     JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);
                 } else {
                     vistas.vistaCorreccion.areaEntrada.setText(infoArchivo);
+                    //System.out.println(infoArchivo);
                     // Procesar entrada (datos -> codigos y guardar en .ham) y mostrar en salida
                     modelo.modeloHamming.enviar(); // Convertir datos -> codigos
                     String salida = modelo.modeloHamming.listaParaImprimirPorLineas(modelo.modeloHamming.getPalabrasDeCodigo());
@@ -139,7 +140,7 @@ public class Controlador implements ActionListener {
             File archivo = abrirChooser("ham");
             if (archivo != null) {
                 modelo.modeloHamming.setArchivo(archivo);
-                String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, 21);
+                String infoArchivo = modelo.modeloHamming.getInfoArchivo(archivo, false);
                 vistas.vistaCorreccion.txtNombreArchivo.setText(modelo.getNombreConExtension(archivo));                
                 if (infoArchivo.compareTo("") == 0 || !modelo.modeloHamming.archivoValido) {
                     JOptionPane.showMessageDialog(null, modelo.modeloHamming.error);

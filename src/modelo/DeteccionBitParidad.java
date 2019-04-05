@@ -44,10 +44,6 @@ public class DeteccionBitParidad {
         return archivo.getName().substring(0, indice);
     }
 
-    public Boolean charEsValido(char a) {
-        return (a >= 65 && a <= 90) || (a >= 97 && a <= 122) || a == 58 || a == 59 || a == 44 || a == 46 || a == 32;
-    }
-
     /**
      * Convierte la palabra de codigo que se ha enviado o la que se desee y la
      * transforma en una palabra de datos, es decir hace el proceso contrario.
@@ -102,7 +98,7 @@ public class DeteccionBitParidad {
             if (comprobar) {
                 for (int i = 0; i < contenido.length(); i++) {
                     char letra = contenido.charAt(i);
-                    if (!charEsValido(letra)) {
+                    if (!Modelo.charEsValido(letra)) {
                         invalido = true;
                     }
                 }                
@@ -150,9 +146,8 @@ public class DeteccionBitParidad {
         try (PrintWriter pw = new PrintWriter(getNombreSinExtension(archivo) + ".btp", "UTF-8")) {
             int cont = 0;
             String binWord = ""; //Palabra de codigo por linea
-            String bin;
             for (int i = 0; i < bytes.length; i++) {
-                bin = Integer.toBinaryString(bytes[i]); // Se convierte a binario. Caracter por caracter.
+                String bin = Integer.toBinaryString(bytes[i]); // Se convierte a binario. Caracter por caracter.
                 if (bin.length() < 8) {
                     for (int j = bin.length(); j < 8; j++) {
                         bin = "0" + bin;

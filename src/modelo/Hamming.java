@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -52,55 +53,105 @@ public class Hamming {
     * Lee las palabras de datos del archivo y las guarda en una lista
     * Verifica que las palabras de datos leidas sean correctas
      */
-    public String getInfoArchivo(File archivo, int longitudMaxima) {
+    public String getInfoArchivo(File archivo, boolean esFrase) {
         String contenido = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader(archivo));
-            String linea;
             // Se reinician las listas
             palabrasDeDato.clear();
             palabrasDeCodigo.clear();
             errores.clear();
-            OUTER:
+
+            BufferedReader br = new BufferedReader(new FileReader(archivo));
+            String linea;
+            
             while ((linea = br.readLine()) != null) {
-                switch (longitudMaxima) {
-                    case 8:
-                    case 16:
-                        palabrasDeDato.add(linea);
-                        break;
-                    case 12:
-                    case 21:
-                        palabrasDeCodigo.add(linea);
-                        break;
-                    default:
+                boolean invalido = false;
+                if (esFrase) {
+                    // Conversion de frase a palabra de datos aabbccd
+                    // Comprobar que solo tenga caracteres validos
+                    for (int i = 0; i < linea.length(); i++) {
+                        char letra = linea.charAt(i);
+                        if (!Modelo.charEsValido(letra)) {
+                            invalido = true;
+                        }
+                    }
+                    for (int i = 0; i < linea.length() - 1; i += 2) {
+                        String dato = str2Binary(linea.substring(i, i + 2));
+                        contenido += (dato + System.lineSeparator());
+                        System.out.println(contenido);
+                        palabrasDeDato.add(dato);
+                    }
+                    // Si es de longitud 1 no corre el ciclo for
+                    // Se hace la conversion solo a ese char
+                    if (linea.length() == 1) {
+                        String dato = str2Binary(linea.charAt(0) + "");
+                        contenido += dato;
+                        palabrasDeDato.add(dato);
+                    }
+                    // Si es impar y diferente de 1, se convierte el ultimo char que falto
+                    if (linea.length() % 2 != 0 && linea.length() != 1) {
+                        String dato = str2Binary(linea.charAt(linea.length() - 1) + "");
+                        contenido += dato;
+                        palabrasDeDato.add(dato);
+                    }
+                    if (!invalido) {
+                        archivoValido = true;
+                    } else {
                         archivoValido = false;
-                        error = "Esta longitud no es permitida";
-                        break OUTER;
-                }
-                contenido += (linea + System.lineSeparator());
-                if (linea.length() == 8 || linea.length() == 16 || linea.length() == 12 || linea.length() == 21) {
+                        error = "la frase contiene caracteres no permitidos";
+                    }
+                    
+                } else { // Son codigos entonces (solo pueden ser bits)
+                    if (linea.length() != 12 && linea.length() != 21) {
+                        archivoValido = false;
+                        contenido = "";
+                        break;
+                    }
                     for (int i = 0; i < linea.length(); i++) {
                         if (linea.charAt(i) != '0' && linea.charAt(i) != '1') {
                             archivoValido = false;
                             error = "El archivo solo puede contener bits (0 y 1)";
                             break;
                         }
+                        
                     }
-                } else {
-                    archivoValido = false;
-                    error = "La longitud debe ser de maximo " + longitudMaxima + " bits";
+                    if (!archivoValido) {
+                        contenido = "";
+                        break; // Salir del for
+                    }
+                    contenido += (linea + System.lineSeparator());
+                    palabrasDeCodigo.add(linea);                    
                 }
+
+                // Despues de salir del while y archivoValido = false
                 if (!archivoValido) {
+                    contenido = "";
                     break;
                 }
+
             }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
         if (contenido.compareToIgnoreCase("") == 0) {
-            error = "Ocurrio un error de lectura con el archivo seleccionado. Intentelo de nuevo, por favor.";
+            error = "Ocurrio un error de lectura con el archivo seleccionado, contenido vacio. Intentelo de nuevo, por favor.";
         }
         return contenido;
+    }
+
+    public String str2Binary(String cadena) {
+        String resultado = "";
+        byte[] bytes = cadena.getBytes(StandardCharsets.US_ASCII); // Se obtienen los valores ASCII
+        for (int i = 0; i < bytes.length; i++) {
+            String bin = Integer.toBinaryString(bytes[i]); // Se convierte a binario. Caracter por caracter.
+            if (bin.length() < 8) {
+                for (int j = bin.length(); j < 8; j++) {
+                    bin = "0" + bin;
+                }
+            }
+            resultado += bin;
+        }
+        return resultado;
     }
 
     public String listaParaImprimirPorLineas(ArrayList<String> lista) {
